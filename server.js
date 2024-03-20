@@ -10,7 +10,14 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: function(origin, callback) {
+        // Chỉ cho phép tên miền được
+        if (origin === process.env.CLIENT_URL) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }))
